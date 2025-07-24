@@ -1,6 +1,6 @@
 body {
     font-family: sans-serif;
-    background: #2c3e50; /* darker background */
+    background: #7ca15c; /* darker background */
     color: #ecf0f1;     /* lighter text color for contrast */
     margin: 0;
 }
@@ -23,22 +23,22 @@ body {
     font-weight: bold;
     border: 1px solid #34495e; /* updated border color */
     color: #ecf0f1;            /* lighter text */
-    background-color: #3498db; /* blue tinted background */
+    background-color: #ff984b; /* orange tinted background */
     border-radius: 5px;        /* rounded borders for modern look */
     transition: background-color 0.2s;
 }
 
 #control button:disabled, #control button:disabled:hover {
     color: #666;
-    background-color: #2980b9; /* slightly darker for disabled state */
+    background-color: #fa8836; /* slightly darker for disabled state */
 }
 
 #control button:hover {
-    background-color: #2980b9; /* darker hover effect */
+    background-color: #ea8336; /* darker hover effect */
 }
 
 /* other controls */
-#run, #stop, #music_ctl, #reset {
+#run, #stop, #music_ctl, #reset, #autoplay {
     width: 120px;
     height: 50px;
     margin: 0;
@@ -148,12 +148,12 @@ body {
     border: 1px solid #34495e;
     padding: 8px 15px;
     border-radius: 5px;
-    background-color: #3498db;
+    background-color: #ff984b;
     transition: background-color 0.2s;
 }
 
 #settings-link:hover {
-    background-color: #2980b9; /* darker hover effect */
+    background-color: #ea8336; /* darker hover effect */
 }
 
 #info-btn {
@@ -168,12 +168,12 @@ body {
     border: 1px solid #34495e;
     padding: 8px 15px;
     border-radius: 5px;
-    background-color: #3498db;
+    background-color: #ff984b;
     transition: background-color 0.2s;
 }
 
 #info-btn:hover {
-    background-color: #2980b9; /* darker hover effect */
+    background-color: #ea8336; /* darker hover effect */
 }
 
 #info-panel {

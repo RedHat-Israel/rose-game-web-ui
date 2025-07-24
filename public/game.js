@@ -1,3 +1,7 @@
+let high_scores = [0, 0];
+let results_sums = [0, 0];
+let num_of_rounds = 0;
+
 class App {
   client = null
   controller = null
@@ -15,7 +19,7 @@ class App {
     document.querySelector('#left.player .name').textContent = 'Loading ...'
 
     this.controller = new Controller()
-    this.rate = new Rate([0.5, 1.0, 2.0, 5.0, 10.0])
+    this.rate = new Rate([0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 60.0, 100.0, 200.0, 300.0, 400.0, 500.0])
     const imageLoader = new ImageLoader(() => {
       this.client = new Client(this.onmessage.bind(this), 2000)
 
@@ -30,7 +34,7 @@ class App {
     this.cars = new Cars(imageLoader)
     this.finish_line = new FinishLine(imageLoader)
     this.infoUpdater = new Information()
-    this.sound = new Sound('assets/soundtrack/Nyan_Cat.ogg')
+    this.sound = new Sound('assets/soundtrack/מרוץ האש.mp3')
   }
 
   onmessage (m) {
@@ -91,36 +95,47 @@ class Client {
 class Controller {
   constructor () {
     this.initializeEvents()
+    this.autoplay = false;
   }
 
   initializeEvents () {
-    document.querySelector('#run').addEventListener('click', event => {
-      event.preventDefault()
-      this.run()
-    })
+  document.querySelector('#run').addEventListener('click', event => {
+    event.preventDefault()
+    this.run()
+  })
 
-    document.querySelector('#stop').addEventListener('click', event => {
-      event.preventDefault()
-      this.stop()
-    })
+  document.querySelector('#stop').addEventListener('click', event => {
+    event.preventDefault()
+    this.stop()
+  })
 
-    document.querySelector('#reset').addEventListener('click', event => {
-      event.preventDefault()
-      this.reset()
-    })
+  document.querySelector('#reset').addEventListener('click', event => {
+    event.preventDefault()
+    this.reset()
+  })
 
-    document.getElementById('info-btn').addEventListener('click', function (e) {
-      e.preventDefault() // Prevent default behavior of the anchor
+  document.querySelector('#autoplay').addEventListener('click', event => {
+    event.preventDefault()
+    this.autoplay = !this.autoplay
+//    if (this.autoplay) {
+//        localStorage.removeItem('highestScore')
+//        localStorage.removeItem('highestScorer')
+//        console.log('High score reset.')
+//    }
+  })
 
-      const infoPanel = document.getElementById('info-panel')
+  document.getElementById('info-btn').addEventListener('click', function (e) {
+    e.preventDefault()
 
-      if (infoPanel.classList.contains('hidden')) {
-        infoPanel.classList.remove('hidden')
-      } else {
-        infoPanel.classList.add('hidden')
-      }
-    })
-  }
+    const infoPanel = document.getElementById('info-panel')
+
+    if (infoPanel.classList.contains('hidden')) {
+      infoPanel.classList.remove('hidden')
+    } else {
+      infoPanel.classList.add('hidden')
+    }
+  })
+}
 
   run () {
     this.disable()
@@ -136,6 +151,7 @@ class Controller {
 
   stop () {
     this.disable()
+    this.autoplay = false;
 
     fetch('api/admin?running=0', { method: 'POST' })
       .then(() => {
@@ -158,32 +174,101 @@ class Controller {
       })
   }
 
+  reset_and_run () {
+  fetch('api/admin?reset=1', { method: 'POST' })
+    .then(() => {
+      console.log('reset')
+
+
+      setTimeout(() => {
+        this.run()
+      }, 1000)
+    })
+    .catch((e) => {
+      console.log(`Error reset: ${e.toString()}`)
+    })
+}
+
   update (state) {
     if (state.players.length === 0) {
       document.querySelector('#run').setAttribute('disabled', 'disabled')
       document.querySelector('#stop').setAttribute('disabled', 'disabled')
+      document.querySelector('#autoplay').setAttribute('disabled', 'disabled')
     } else if (state.started) {
       document.querySelector('#info').textContent = ('')
       document.querySelector('#run').setAttribute('disabled', 'disabled')
       document.querySelector('#stop').removeAttribute('disabled')
       document.querySelector('#reset').setAttribute('disabled', 'disabled')
+      if (this.autoplay) {
+      document.querySelector('#autoplay').setAttribute('disabled', 'disabled')
+      }
+      else {
+        document.querySelector('#autoplay').removeAttribute('disabled')
+      }
     } else {
       document.querySelector('#info').textContent = ('')
       document.querySelector('#run').removeAttribute('disabled')
       document.querySelector('#stop').setAttribute('disabled', 'disabled')
       document.querySelector('#reset').removeAttribute('disabled')
+      if (this.autoplay) {
+      document.querySelector('#autoplay').setAttribute('disabled', 'disabled')
+      }
+      else {
+        document.querySelector('#autoplay').removeAttribute('disabled')
+      }
     }
 
     if (state.timeleft === 0) {
       document.querySelector('#run').setAttribute('disabled', 'disabled')
+      let player_nums = Object.keys(state.players);
+      num_of_rounds++;
+      for (const num of player_nums) {
+        const player = state.players[num];
+        results_sums[num] += player.score;
+        if (player.score >= high_scores[num]) {
+          high_scores[num] = player.score;
+        }
+      }
+
+      if (this.autoplay) {
+        document.querySelector('#stop').removeAttribute('disabled')
+//        let currentScore = 0
+//          let topPlayer = 'Unknown'
+//
+//          if (state.players && state.players.length > 0) {
+//            // Get highest scoring player in current game
+//            const best = state.players.reduce((a, b) => (a.score > b.score ? a : b))
+//            currentScore = best.score
+//            topPlayer = best.name
+//          }
+//
+//          // Read saved high score from localStorage
+//          const savedHighScore = localStorage.getItem('highestScore')
+//          const savedScorer = localStorage.getItem('highestScorer')
+//          highScore = savedHighScore ? parseInt(savedHighScore) : 0
+//          highScorer = savedScorer || 'Unknown'
+//
+//          // Update if new high score
+//          if (currentScore > highScore) {
+//            highScore = currentScore
+//            highScorer = topPlayer
+//            localStorage.setItem('highestScore', highScore)
+//            localStorage.setItem('highestScorer', highScorer)
+//          }
+//
+//          // Log highest score
+//          console.log('Highest Score:', highScore)
+//          console.log('Highest Scorer:', highScorer)
+        this.reset_and_run()
+      }
     }
   }
 
   disable () {
     document.querySelector('#run').setAttribute('disabled', 'disabled')
     document.querySelector('#stop').setAttribute('disabled', 'disabled')
+      }
   }
-}
 
 class Rate {
   constructor (values) {
@@ -432,6 +517,7 @@ class Information {
       infoText += 'No players connected.<br/>'
     }
 
+    let player_num = 0;
     state.players.forEach(player => {
       const formattedResponseTime = (player.response_time * 1000.0).toFixed(2)
 
@@ -446,15 +532,19 @@ class Information {
       }
 
       infoText += '<br/>'
-      infoText += `Pinguins: ${player.pickups}<br/>`
+      infoText += `Penguins: ${player.pickups}<br/>`
       infoText += `Breaks: ${player.breaks}<br/>`
       infoText += `Jumps: ${player.jumps}<br/>`
       infoText += '<br/>'
       infoText += `Missed: ${player.misses}<br/>`
       infoText += `Crashes: ${player.hits}<br/>`
       infoText += `Collisions: ${player.collisions}<br/>`
+      infoText += '<br/>'
+      infoText += `High Score: ${high_scores[player_num]}<br/>`
+      infoText += `Average Score: ${(results_sums[player_num] / num_of_rounds).toFixed(3)}<br/>`
 
       infoText += '<br/><br/>'
+      player_num++;
     })
 
     this.infoElement.innerHTML = infoText
