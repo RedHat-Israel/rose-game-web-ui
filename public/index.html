@@ -9,6 +9,13 @@
 
   <body>
     <div id="content">
+    <div id="world-settings">
+      <input type="file" id="fileInput" accept=".csv" style="display: none;">
+      <label for="fileInput" id="customFileLabel">Choose File</label>
+      <button onclick="uploadFile()" id="upload-file-button">Upload</button>
+      <button onclick="activateRandomMap()" id="switch-maps-button">Switch to custom map</button>
+    </div>
+
       <a href="settings/index.html" id="settings-link">Settings</a>
       <a href="#" id="info-btn">Info</a>
 
@@ -17,10 +24,12 @@
           <span id="info-text"></span>
       </div>
 
+      <script src="customMapLoader.js"></script>
+
       <form id="control">
 
         <button id="run" disabled>Run</button>
-        <button id="stop"  disabled>Stop</button>
+        <button id="stop" disabled>Stop</button>
         <button id="music_ctl">Music</button>
         <button id="reset">Reset</button>
         <label id="info"></label>

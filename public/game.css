@@ -196,3 +196,89 @@ body {
 .error-text {
     color: red;
 }
+
+
+
+
+#upload-file-button{
+    display: block;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    border: 1px solid #34495e;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3498db;
+    transition: background-color 0.2s;
+}
+
+#file-input{
+    display: block;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    border: 1px solid #34495e;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3498db;
+    transition: background-color 0.2s;
+}
+
+
+#world-settings {
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 5px; /* rounded corners */
+    width: fit-content;
+    position: absolute;
+    top: 10px;
+    left: -10px;
+    z-index: 100; /* ensure it appears above other elements */
+    display: flex;         /* or 'grid' */
+    flex-direction: column; /* stack elements vertically */
+    gap: 10px;   
+}
+
+
+#world-settings input[type="file"] {
+    display: inline-block;
+    margin-right: 10px;
+    
+}
+
+#world-settings button {
+    display: block;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    border: 1px solid #34495e;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3498db;
+    transition: background-color 0.2s;
+}
+
+#world-settings button:hover {
+ background-color: #2980b9
+}
+
+
+#world-settings button:disabled {
+    color: #666;
+    background-color: #2980b9; /* slightly darker for disabled state */
+}
+
+#file-input {
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    width: 200px;
+    position: absolute;
+    left: -5px;
+    top: -25px;
+}
