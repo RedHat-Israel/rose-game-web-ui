@@ -9,20 +9,21 @@ class App {
   cars = null
   finish_line = null
   infoUpdater = null
+  debugUpdater = null
 
   ready () {
     // Start loading game images.
     document.querySelector('#left.player .name').textContent = 'Loading ...'
 
     this.controller = new Controller()
-    this.rate = new Rate([0.5, 1.0, 2.0, 5.0, 10.0])
+    this.rate = new Rate([0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0])
     const imageLoader = new ImageLoader(() => {
       this.client = new Client(this.onmessage.bind(this), 2000)
 
       // Finish loading game images.
       document.querySelector('#left.player .name').textContent = ''
     })
-
+    
     this.context = document.querySelector('#game').getContext('2d')
     this.dashboard = new Dashboard()
     this.track = new Track(imageLoader)
@@ -30,6 +31,9 @@ class App {
     this.cars = new Cars(imageLoader)
     this.finish_line = new FinishLine(imageLoader)
     this.infoUpdater = new Information()
+    console.log("Finished updating info")
+    this.debugUpdater = new Debuging()
+    console.log("Finished updating debug")
     this.sound = new Sound('assets/soundtrack/Nyan_Cat.ogg')
   }
 
@@ -43,6 +47,10 @@ class App {
     const state = msg.payload
 
     // Update
+    this.debugUpdater.update(state)
+    if(this.debugUpdater.debugStop(state)){
+      this.controller.stop()
+    }
     this.controller.update(state)
     this.rate.update(state)
     this.dashboard.update(state)
@@ -51,6 +59,8 @@ class App {
     this.cars.update(state)
     this.finish_line.update(state)
     this.infoUpdater.update(state)
+    
+
 
     // Draw
     this.dashboard.draw(this.context)
@@ -91,16 +101,20 @@ class Client {
 class Controller {
   constructor () {
     this.initializeEvents()
+    this.choseToPlay = false
   }
 
   initializeEvents () {
+    
     document.querySelector('#run').addEventListener('click', event => {
       event.preventDefault()
+      this.choseToPlay = true
       this.run()
     })
 
     document.querySelector('#stop').addEventListener('click', event => {
       event.preventDefault()
+      this.choseToPlay = false
       this.stop()
     })
 
@@ -114,11 +128,24 @@ class Controller {
 
       const infoPanel = document.getElementById('info-panel')
 
-      if (infoPanel.classList.contains('hidden')) {
-        infoPanel.classList.remove('hidden')
-      } else {
-        infoPanel.classList.add('hidden')
-      }
+      infoPanel.toggleAttribute('hidden');
+    })
+    document.getElementById('debug-btn').addEventListener('click', function (e) {
+      e.preventDefault() // Prevent default behavior of the anchor
+
+      const debugPanel = document.getElementById('debug-panel')
+     
+      debugPanel.toggleAttribute('hidden');
+    })
+    document.getElementById('debug-play-btn').addEventListener('click', event => {
+      event.preventDefault()
+      this.choseToPlay = true
+      this.run()
+    })
+    document.getElementById('debug-pause-btn').addEventListener('click', event => {
+      event.preventDefault()
+      this.choseToPlay = false
+      this.stop()
     })
   }
 
@@ -164,18 +191,30 @@ class Controller {
       document.querySelector('#stop').setAttribute('disabled', 'disabled')
     } else if (state.started) {
       document.querySelector('#info').textContent = ('')
+      document.querySelector('#debug').textContent = ('')
       document.querySelector('#run').setAttribute('disabled', 'disabled')
       document.querySelector('#stop').removeAttribute('disabled')
       document.querySelector('#reset').setAttribute('disabled', 'disabled')
+      
     } else {
       document.querySelector('#info').textContent = ('')
+      document.querySelector('#debug').textContent = ('')
       document.querySelector('#run').removeAttribute('disabled')
       document.querySelector('#stop').setAttribute('disabled', 'disabled')
       document.querySelector('#reset').removeAttribute('disabled')
+      
     }
 
     if (state.timeleft === 0) {
       document.querySelector('#run').setAttribute('disabled', 'disabled')
+      this.reset()
+    }
+    if (state.timeleft === 60 && this.choseToPlay) {
+      if(document.getElementById('keep-playing-box').checked){
+          console.log("About to run again")
+          this.run()
+          console.log("run again")
+        }
     }
   }
 
@@ -460,6 +499,80 @@ class Information {
     this.infoElement.innerHTML = infoText
   }
 }
+class Debuging {
+  constructor () {
+    this.debugElement = document.getElementById('debug-text')
+    this.offset = 0
+    this.pastScores = [0,0]
+    this.check_box=0;
+  }
+  
+
+  update (state) {
+    if (!state.players) {
+      return
+    }
+    
+
+    let debugText = ''
+
+    if (state.players.length === 0) {
+      debugText += 'No players connected.<br/>'
+    }
+
+    this.debugElement.innerHTML = debugText
+  }
+
+  debugStop(state){
+      if(document.getElementById('offset-scores-box').checked){
+        return this.offsetScoresCheck(state)
+      }
+      if(document.getElementById('missed-penguin-box').checked){
+        return this.missedPenguin(state)
+      }
+      if(document.getElementById('crash-box').checked){
+        return this.crashed(state)
+      }
+      return false
+  }
+
+  missedPenguin(state){
+    for (const obstacle of state.track) {
+      if (obstacle.name=="penguin"){
+        if(obstacle.x / 3 < 1 && document.getElementById('focus-left-box').checked && (obstacle.y == state.players[0].y)){
+            return true
+        }
+        if(obstacle.x / 3 >= 1 && document.getElementById('focus-right-box').checked && (obstacle.y == state.players[1].y)){
+            return true
+        }
+      }
+    }
+    return false
+    }
+
+  offsetScoresCheck (state){
+    if (state.players.length == 2){
+      if ((state.players[0].score - state.players[1].score) != this.offset){
+          this.offset = state.players[0].score - state.players[1].score
+          return true
+        }
+      this.offset = state.players[0].score - state.players[1].score
+      }
+    return false
+    }
+  crashed (state){ /*have runned into obstacle?*/
+    if (document.getElementById('crash-box').checked){
+      this.min = document.getElementById('focus-left-box').checked ? 0 : 1 //setting boundries to the for loop
+      this.max = document.getElementById('focus-right-box').checked ? 2 : 1
+      for (this.min; this.min < this.max; this.min++) {
+        if (this.pastScores[this.min] - 10 == state.players[this.min].score){
+          this.pastScores[this.min] = state.players[this.min].score
+          return true
+        }
+        this.pastScores[this.min] = state.players[this.min].score
+      }}
+      return false
+  }}
 
 class ImageLoader {
   constructor (done) {

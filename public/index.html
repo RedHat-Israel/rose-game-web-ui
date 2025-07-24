@@ -10,11 +10,27 @@
   <body>
     <div id="content">
       <a href="settings/index.html" id="settings-link">Settings</a>
-      <a href="#" id="info-btn">Info</a>
+      <button href="#" id="info-btn" class="info-btn">Info</button>
 
-      <div id="info-panel" class="hidden">
+      <div id="info-panel" hidden>
           <h2>Game Information</h2>
           <span id="info-text"></span>
+      </div>
+      <button href="#" id="debug-btn" class="info-btn">Debug</button>
+
+      <div id="debug-panel" hidden>
+          <h2>Debug</h2>
+          <button id="debug-play-btn">Play</button>
+          <button id="debug-pause-btn">Pause</button>
+          <br><br><br><br><br>
+          <span id="debug-text"></span>
+          <input type="checkbox" id="keep-playing-box"><label for="keep-playing-box"> Keep playing (plays until trigger)</label><br>
+          <h3>Focus on Car: (Left/ Right)  </h3>
+          <input type="checkbox" id="focus-left-box"><label for="focus-left-box"> Left  </label><input type="checkbox" id="focus-right-box"><label for="focus-right-box"> Right  </label><br><br>
+          <h3>Triggers (When to pause)</h3>
+          <input type="checkbox" id="offset-scores-box"><label for="offset-scores-box"> Offset in scores</label><br>
+          <input type="checkbox" id="crash-box"><label for="crash-box"> Crashed to an obstacle</label><br>
+          <input type="checkbox" id="missed-penguin-box"><label for="missed-penguin-box"> Miss a penguin</label><br>
       </div>
 
       <form id="control">
@@ -24,6 +40,7 @@
         <button id="music_ctl">Music</button>
         <button id="reset">Reset</button>
         <label id="info"></label>
+        <label id="debug"></label>
 
         <div id="rate_ctl">
           <label>Speed</label>

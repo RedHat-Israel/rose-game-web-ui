@@ -156,20 +156,24 @@ body {
     background-color: #2980b9; /* darker hover effect */
 }
 
-#info-btn {
+.info-btn {
     display: block;
     position: absolute;
-    top: 55px;
-    width: 70px;
+    width: 100px;
     right: 10px;
     font-weight: bold;
     color: #ecf0f1;
     text-decoration: none;
+    font-size: 17px;
     border: 1px solid #34495e;
     padding: 8px 15px;
     border-radius: 5px;
     background-color: #3498db;
     transition: background-color 0.2s;
+}
+
+#info-btn {
+        top: 55px;
 }
 
 #info-btn:hover {
@@ -182,15 +186,74 @@ body {
     left: 0;
     top: 0;
     width: 250px; /* Adjust as necessary */
-    height: 100%;
+    height: calc(100% - 2 * 20px);
     background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
     color: white;
     padding: 20px;
     overflow-y: auto; /* For potential scrolling */
 }
 
-.hidden {
-    display: none;
+#debug-btn {
+        top: 100px;
+}
+
+#debug-btn:hover {
+    background-color: #2980b9; /* darker hover effect */
+}
+
+#debug-panel {
+    position: absolute;
+    z-index: 1000;
+    right: 0;
+    bottom: 0px;
+    width: 350px; /* Adjust as necessary */
+    height: 75%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    color: white;
+    padding: 20px;
+    border-radius: 30px 0px 0px 0px; /* round corners: TL TR BR BL */
+    overflow-y: auto; /* For potential scrolling */
+}
+
+#debug-play-btn {
+    display: block;
+    position: absolute;
+    top: 100px;
+    width: 100px;
+    right: 220px;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 17px;
+    border: 1px solid #345e36;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3cdb34;
+    transition: background-color 0.2s;
+}
+#debug-pause-btn {
+    display: block;
+    position: absolute;
+    top: 100px;
+
+    width: 100px;
+    right: 60px;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 17px;
+    border: 1px solid #5e3434;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #db3434;
+    transition: background-color 0.2s;
+}
+
+#debug-play-btn:hover {
+    background-color: #35b929; /* darker hover effect */
+}
+#debug-pause-btn:hover {
+    background-color: #b92929; /* darker hover effect */
 }
 
 .error-text {
