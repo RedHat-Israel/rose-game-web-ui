@@ -35,21 +35,18 @@ function formatTime (durationSeconds) {
 
 /**
  * Turn one player's cumulative counters into the obstacle-by-obstacle
- * breakdown shown in the live log: each row is either a success/total ratio
+ * breakdown for the player tables: each row is either a success/total ratio
  * (penguins, water, crack) or a plain count with no ratio (walls can never be
  * avoided once your car is on that cell, so there's no "success" outcome to
- * compare against; collisions are car-vs-car, not obstacle-vs-car). Coins are
- * shown as a simple total in the Recent Games summary table instead, not
- * broken out as an obstacle-outcome row here.
+ * compare against; collisions are car-vs-car, not obstacle-vs-car).
  */
 function obstacleRows (player) {
-  const penguinSuccess = player.pickups - player.coins
-  const penguinTotal = penguinSuccess + player.misses
+  const penguinTotal = player.pickups + player.misses
   const waterTotal = player.breaks + player.water_hits
   const crackTotal = player.jumps + player.crack_hits
 
   return [
-    { category: 'Success / Miss', obstacle: 'Penguins', success: penguinSuccess, total: penguinTotal },
+    { category: 'Success / Miss', obstacle: 'Penguins', success: player.pickups, total: penguinTotal },
     { category: 'Success / Fail', obstacle: 'Water (braked)', success: player.breaks, total: waterTotal },
     { category: 'Success / Fail', obstacle: 'Crack (jumped)', success: player.jumps, total: crackTotal },
     { category: 'Fail', obstacle: 'Walls hit', count: player.wall_hits },
@@ -67,29 +64,29 @@ function renderStatRows (rows) {
   `).join('')
 }
 
-function renderLog (history, running) {
-  const heading = document.getElementById('log-heading')
-  const empty = document.getElementById('log-empty')
-  const tables = document.getElementById('log-tables')
+function renderSummary (recentResults, totalFinished) {
+  const firstRoundNumber = totalFinished - recentResults.length + 1
+  const newestFirst = recentResults.map((result, i) => ({
+    result,
+    round: firstRoundNumber + i
+  })).reverse()
 
-  if (history.length === 0) {
-    heading.textContent = 'Live Log'
-    empty.classList.remove('hidden')
-    tables.classList.add('hidden')
-    return
-  }
+  document.getElementById('summary-body').innerHTML = newestFirst.map(({ result, round }) => `
+    <tr>
+      <td>${round}</td>
+      <td title="${escapeHtml(result.winner ?? 'Tie')}">${escapeHtml(result.winner ?? 'Tie')}</td>
+      <td>${formatTime(result.duration_seconds)}</td>
+    </tr>
+  `).join('')
+}
 
-  heading.textContent = running ? 'Live Log — Current Game' : 'Live Log — Last Game'
-  empty.classList.add('hidden')
-  tables.classList.remove('hidden')
-
-  const latestPlayers = history[history.length - 1].players
+function renderPlayerTables (latestPlayers) {
   assignSlots(latestPlayers.map(p => p.name))
 
   ;['a', 'b'].forEach((slot, i) => {
     const name = driverNames[i]
-    const nameEl = document.getElementById(`log-name-${slot}`)
-    const tableBody = document.querySelector(`#log-table-${slot} tbody`)
+    const nameEl = document.getElementById(`player-name-${slot}`)
+    const tableBody = document.querySelector(`#player-table-${slot} tbody`)
 
     const player = latestPlayers.find(p => p.name === name)
     if (!player) {
@@ -106,11 +103,11 @@ function renderLog (history, running) {
   })
 }
 
-function renderResults (recentResults, totalFinished) {
-  const empty = document.getElementById('results-empty')
-  const content = document.getElementById('results-content')
+function render (data) {
+  const empty = document.getElementById('empty-note')
+  const content = document.getElementById('content')
 
-  if (recentResults.length === 0) {
+  if (data.history.length === 0 && data.recent_results.length === 0) {
     empty.classList.remove('hidden')
     content.classList.add('hidden')
     return
@@ -119,59 +116,18 @@ function renderResults (recentResults, totalFinished) {
   empty.classList.add('hidden')
   content.classList.remove('hidden')
 
-  const firstRoundNumber = totalFinished - recentResults.length + 1
-  const newestFirst = recentResults.map((result, i) => ({
-    result,
-    round: firstRoundNumber + i
-  })).reverse()
+  renderSummary(data.recent_results, data.total_finished)
 
-  document.getElementById('results-name-a').textContent = driverNames[0] ?? '—'
-  document.getElementById('results-name-b').textContent = driverNames[1] ?? '—'
-  document.getElementById('summary-name-a').textContent = driverNames[0] ? `${driverNames[0]} Coins` : '—'
-  document.getElementById('summary-name-b').textContent = driverNames[1] ? `${driverNames[1]} Coins` : '—'
-
-  document.getElementById('summary-body').innerHTML = newestFirst.map(({ result, round }) => `
-    <tr>
-      <td>${round}</td>
-      <td title="${escapeHtml(result.winner ?? 'Tie')}">${escapeHtml(result.winner ?? 'Tie')}</td>
-      <td>${formatTime(result.duration_seconds)}</td>
-      <td>${result.players?.[driverNames[0]]?.coins ?? '—'}</td>
-      <td>${result.players?.[driverNames[1]]?.coins ?? '—'}</td>
-    </tr>
-  `).join('')
-
-  ;['a', 'b'].forEach((slot, i) => {
-    const name = driverNames[i]
-    const body = document.getElementById(`results-body-${slot}`)
-    body.innerHTML = newestFirst.map(({ result, round }) => {
-      const player = result.players?.[name]
-      if (!player) {
-        return `<tr><td>${round}</td><td colspan="6">—</td></tr>`
-      }
-      const penguinSuccess = player.pickups - player.coins
-      const waterTotal = player.breaks + player.water_hits
-      const crackTotal = player.jumps + player.crack_hits
-      return `
-        <tr>
-          <td>${round}</td>
-          <td>${player.score}</td>
-          <td>${formatRatio(penguinSuccess, penguinSuccess + player.misses)}</td>
-          <td>${formatRatio(player.breaks, waterTotal)}</td>
-          <td>${formatRatio(player.jumps, crackTotal)}</td>
-          <td>${player.wall_hits}</td>
-          <td>${player.collisions}</td>
-        </tr>
-      `
-    }).join('')
-  })
+  if (data.history.length > 0) {
+    renderPlayerTables(data.history[data.history.length - 1].players)
+  }
 }
 
 async function poll () {
   try {
     const response = await fetch('/api/telemetry')
     const data = await response.json()
-    renderLog(data.history, data.running)
-    renderResults(data.recent_results, data.total_finished)
+    render(data)
   } catch (error) {
     console.log('Error fetching telemetry: ' + error.toString())
   }
@@ -184,8 +140,7 @@ async function clearHistory () {
     const response = await fetch('/api/telemetry/clear', { method: 'POST' })
     const data = await response.json()
     resetSlots()
-    renderLog(data.history, data.running)
-    renderResults(data.recent_results, data.total_finished ?? 0)
+    render(data)
   } catch (error) {
     console.log('Error clearing telemetry: ' + error.toString())
   } finally {

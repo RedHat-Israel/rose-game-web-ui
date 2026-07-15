@@ -11,13 +11,20 @@
     <h2 class="heading">Telemetry</h2>
     <button id="clear-button" class="clear-button">Clear history</button>
 
-    <section>
-        <h3 id="log-heading">Live Log</h3>
-        <p id="log-empty" class="empty-note">No ticks recorded yet &mdash; start the game to see live telemetry.</p>
-        <div id="log-tables" class="driver-tables hidden">
+    <p id="empty-note" class="empty-note">No games played yet.</p>
+
+    <div id="content" class="hidden">
+        <table id="summary-table" class="summary-table">
+            <thead>
+                <tr><th>Round</th><th>Winner</th><th>Time</th></tr>
+            </thead>
+            <tbody id="summary-body"></tbody>
+        </table>
+
+        <div id="player-tables" class="driver-tables">
             <div class="driver-table">
-                <h4 id="log-name-a" class="driver-name"></h4>
-                <table id="log-table-a">
+                <h4 id="player-name-a" class="driver-name"></h4>
+                <table id="player-table-a">
                     <thead>
                         <tr><th>Category</th><th>Obstacle</th><th>Result</th></tr>
                     </thead>
@@ -25,8 +32,8 @@
                 </table>
             </div>
             <div class="driver-table">
-                <h4 id="log-name-b" class="driver-name"></h4>
-                <table id="log-table-b">
+                <h4 id="player-name-b" class="driver-name"></h4>
+                <table id="player-table-b">
                     <thead>
                         <tr><th>Category</th><th>Obstacle</th><th>Result</th></tr>
                     </thead>
@@ -34,47 +41,7 @@
                 </table>
             </div>
         </div>
-    </section>
-
-    <section>
-        <h3>Recent Games</h3>
-        <p id="results-empty" class="empty-note">No finished games yet.</p>
-        <div id="results-content" class="hidden">
-            <table id="summary-table" class="summary-table">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Winner</th>
-                        <th>Time</th>
-                        <th id="summary-name-a"></th>
-                        <th id="summary-name-b"></th>
-                    </tr>
-                </thead>
-                <tbody id="summary-body"></tbody>
-            </table>
-
-            <div id="results-tables" class="driver-tables">
-                <div class="driver-table">
-                    <h4 id="results-name-a" class="driver-name"></h4>
-                    <table id="results-table-a">
-                        <thead>
-                            <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
-                        </thead>
-                        <tbody id="results-body-a"></tbody>
-                    </table>
-                </div>
-                <div class="driver-table">
-                    <h4 id="results-name-b" class="driver-name"></h4>
-                    <table id="results-table-b">
-                        <thead>
-                            <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
-                        </thead>
-                        <tbody id="results-body-b"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
 
     <script type="module" src="./telemetry.js"></script>
 </body>
