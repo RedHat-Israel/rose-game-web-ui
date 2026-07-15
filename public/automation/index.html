@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation</title>
+    <link rel="stylesheet" href="./automation.css">
+</head>
+<body class="dark-theme">
+    <a href="../index.html" id="back-link">&larr; Back to game</a>
+    <h2 class="heading">Batch Simulation</h2>
+
+    <form class="form" id="automation-form">
+        <div class="form-group">
+            <label for="driver1" class="label">Driver 1:</label>
+            <input type="text" id="driver1" name="driver1" value="http://127.0.0.1:8081" placeholder="http://127.0.0.1:8081" class="input-field">
+        </div>
+        <div class="form-group">
+            <label for="driver2" class="label">Driver 2:</label>
+            <input type="text" id="driver2" name="driver2" value="http://127.0.0.1:8082" placeholder="http://127.0.0.1:8082" class="input-field">
+        </div>
+        <div class="form-group">
+            <label for="games" class="label">Games:</label>
+            <input type="number" id="games" name="games" value="10" min="1" max="500" class="input-field">
+        </div>
+        <div class="form-group">
+            <label for="track" class="label">Track:</label>
+            <select id="track" name="track" class="input-field">
+                <option value="random" selected>random</option>
+                <option value="same">same</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" id="run-button" class="submit-button">Run Batch</button>
+        </div>
+    </form>
+
+    <div class="error-message" id="error-message"></div>
+    <p id="status-message" class="status-message hidden"></p>
+
+    <section id="results-section" class="hidden">
+        <h3>Results</h3>
+        <table id="results-table">
+            <thead>
+                <tr><th>Driver</th><th>Wins</th><th>Losses</th><th>Ties</th><th>Avg score</th></tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+        </table>
+
+        <h3>Per-game</h3>
+        <table id="per-game-table">
+            <thead>
+                <tr><th>#</th><th>Winner</th><th>Scores</th></tr>
+            </thead>
+            <tbody id="per-game-body"></tbody>
+        </table>
+    </section>
+
+    <script type="module" src="./automation.js"></script>
+</body>
+</html>

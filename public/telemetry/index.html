@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemetry</title>
+    <link rel="stylesheet" href="./telemetry.css">
+</head>
+<body class="dark-theme">
+    <a href="../index.html" id="back-link">&larr; Back to game</a>
+    <h2 class="heading">Telemetry</h2>
+    <button id="clear-button" class="clear-button">Clear history</button>
+
+    <section>
+        <h3>Recent games</h3>
+        <table id="results-table">
+            <thead>
+                <tr><th>Winner</th><th>Scores</th></tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+        </table>
+        <p id="results-empty" class="empty-note">No finished games yet.</p>
+    </section>
+
+    <section>
+        <h3>Live log</h3>
+        <table id="log-table">
+            <thead>
+                <tr>
+                    <th>Step</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                    <th>Pickups</th>
+                    <th>Hits</th>
+                    <th>Misses</th>
+                    <th>Breaks</th>
+                    <th>Jumps</th>
+                    <th>Collisions</th>
+                    <th>Response (ms)</th>
+                </tr>
+            </thead>
+            <tbody id="log-body"></tbody>
+        </table>
+        <p id="log-empty" class="empty-note">No ticks recorded yet &mdash; start the game to see live telemetry.</p>
+    </section>
+
+    <script type="module" src="./telemetry.js"></script>
+</body>
+</html>
