@@ -70,5 +70,53 @@ th {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.driver-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.driver-tables.three-col {
+    grid-template-columns: 1fr 160px 1fr;
+}
+
+.driver-name {
+    margin: 0 0 8px;
+    color: #ecf0f1;
+}
+
+.driver-table table,
+.winner-column table {
+    background-color: #34495e;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.score-row td {
+    font-weight: bold;
+    border-bottom: none;
+}
+
+.winner-column table {
+    text-align: center;
+}
+
+.winner-column th,
+.winner-column td {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 0; /* let text-overflow work inside a fixed grid track */
+}
+
+@media (max-width: 700px) {
+    .driver-tables,
+    .driver-tables.three-col {
+        grid-template-columns: 1fr;
+    }
 }

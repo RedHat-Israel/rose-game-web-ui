@@ -12,36 +12,62 @@
     <button id="clear-button" class="clear-button">Clear history</button>
 
     <section>
-        <h3>Recent games</h3>
-        <table id="results-table">
-            <thead>
-                <tr><th>Winner</th><th>Scores</th></tr>
-            </thead>
-            <tbody id="results-body"></tbody>
-        </table>
-        <p id="results-empty" class="empty-note">No finished games yet.</p>
+        <h3 id="log-heading">Live Log</h3>
+        <p id="log-empty" class="empty-note">No ticks recorded yet &mdash; start the game to see live telemetry.</p>
+        <div id="log-tables" class="driver-tables hidden">
+            <div class="driver-table">
+                <h4 id="log-name-a" class="driver-name"></h4>
+                <table id="log-table-a">
+                    <thead>
+                        <tr><th>Category</th><th>Obstacle</th><th>Result</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="driver-table">
+                <h4 id="log-name-b" class="driver-name"></h4>
+                <table id="log-table-b">
+                    <thead>
+                        <tr><th>Category</th><th>Obstacle</th><th>Result</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </section>
 
     <section>
-        <h3>Live log</h3>
-        <table id="log-table">
-            <thead>
-                <tr>
-                    <th>Step</th>
-                    <th>Player</th>
-                    <th>Score</th>
-                    <th>Pickups</th>
-                    <th>Hits</th>
-                    <th>Misses</th>
-                    <th>Breaks</th>
-                    <th>Jumps</th>
-                    <th>Collisions</th>
-                    <th>Response (ms)</th>
-                </tr>
-            </thead>
-            <tbody id="log-body"></tbody>
-        </table>
-        <p id="log-empty" class="empty-note">No ticks recorded yet &mdash; start the game to see live telemetry.</p>
+        <h3>Recent Games</h3>
+        <p id="results-empty" class="empty-note">No finished games yet.</p>
+        <div id="results-tables" class="driver-tables three-col hidden">
+            <div class="driver-table">
+                <h4 id="results-name-a" class="driver-name"></h4>
+                <table id="results-table-a">
+                    <thead>
+                        <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Coins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
+                    </thead>
+                    <tbody id="results-body-a"></tbody>
+                </table>
+            </div>
+            <div class="winner-column">
+                <h4 class="driver-name">Winner</h4>
+                <table id="winner-table">
+                    <thead>
+                        <tr><th>Round</th><th>Winner</th></tr>
+                    </thead>
+                    <tbody id="winner-body"></tbody>
+                </table>
+            </div>
+            <div class="driver-table">
+                <h4 id="results-name-b" class="driver-name"></h4>
+                <table id="results-table-b">
+                    <thead>
+                        <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Coins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
+                    </thead>
+                    <tbody id="results-body-b"></tbody>
+                </table>
+            </div>
+        </div>
     </section>
 
     <script type="module" src="./telemetry.js"></script>
