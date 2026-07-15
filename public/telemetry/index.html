@@ -39,33 +39,39 @@
     <section>
         <h3>Recent Games</h3>
         <p id="results-empty" class="empty-note">No finished games yet.</p>
-        <div id="results-tables" class="driver-tables three-col hidden">
-            <div class="driver-table">
-                <h4 id="results-name-a" class="driver-name"></h4>
-                <table id="results-table-a">
-                    <thead>
-                        <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Coins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
-                    </thead>
-                    <tbody id="results-body-a"></tbody>
-                </table>
-            </div>
-            <div class="winner-column">
-                <h4 class="driver-name">Winner</h4>
-                <table id="winner-table">
-                    <thead>
-                        <tr><th>Round</th><th>Winner</th></tr>
-                    </thead>
-                    <tbody id="winner-body"></tbody>
-                </table>
-            </div>
-            <div class="driver-table">
-                <h4 id="results-name-b" class="driver-name"></h4>
-                <table id="results-table-b">
-                    <thead>
-                        <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Coins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
-                    </thead>
-                    <tbody id="results-body-b"></tbody>
-                </table>
+        <div id="results-content" class="hidden">
+            <table id="summary-table" class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Winner</th>
+                        <th>Time</th>
+                        <th id="summary-name-a"></th>
+                        <th id="summary-name-b"></th>
+                    </tr>
+                </thead>
+                <tbody id="summary-body"></tbody>
+            </table>
+
+            <div id="results-tables" class="driver-tables">
+                <div class="driver-table">
+                    <h4 id="results-name-a" class="driver-name"></h4>
+                    <table id="results-table-a">
+                        <thead>
+                            <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
+                        </thead>
+                        <tbody id="results-body-a"></tbody>
+                    </table>
+                </div>
+                <div class="driver-table">
+                    <h4 id="results-name-b" class="driver-name"></h4>
+                    <table id="results-table-b">
+                        <thead>
+                            <tr><th>Round</th><th>Score</th><th>Penguins</th><th>Water</th><th>Crack</th><th>Walls</th><th>Coll.</th></tr>
+                        </thead>
+                        <tbody id="results-body-b"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>

@@ -80,17 +80,12 @@ th {
     align-items: start;
 }
 
-.driver-tables.three-col {
-    grid-template-columns: 1fr 160px 1fr;
-}
-
 .driver-name {
     margin: 0 0 8px;
     color: #ecf0f1;
 }
 
-.driver-table table,
-.winner-column table {
+.driver-table table {
     background-color: #34495e;
     border-radius: 4px;
     overflow: hidden;
@@ -101,22 +96,15 @@ th {
     border-bottom: none;
 }
 
-.winner-column table {
-    text-align: center;
-}
-
-.winner-column th,
-.winner-column td {
-    text-align: center;
-    white-space: nowrap;
+.summary-table {
+    background-color: #34495e;
+    border-radius: 4px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 0; /* let text-overflow work inside a fixed grid track */
+    margin-bottom: 20px;
 }
 
 @media (max-width: 700px) {
-    .driver-tables,
-    .driver-tables.three-col {
+    .driver-tables {
         grid-template-columns: 1fr;
     }
 }

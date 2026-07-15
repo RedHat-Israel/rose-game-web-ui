@@ -29,23 +29,27 @@ function formatRatio (success, total) {
   return `${success}/${total} (${pct}%)`
 }
 
+function formatTime (durationSeconds) {
+  return durationSeconds === undefined ? '—' : `${durationSeconds.toFixed(1)}s`
+}
+
 /**
  * Turn one player's cumulative counters into the obstacle-by-obstacle
  * breakdown shown in the live log: each row is either a success/total ratio
- * (penguins, coins, water, crack) or a plain count with no ratio (walls can
- * never be avoided once your car is on that cell, so there's no "success"
- * outcome to compare against; collisions are car-vs-car, not obstacle-vs-car).
+ * (penguins, water, crack) or a plain count with no ratio (walls can never be
+ * avoided once your car is on that cell, so there's no "success" outcome to
+ * compare against; collisions are car-vs-car, not obstacle-vs-car). Coins are
+ * shown as a simple total in the Recent Games summary table instead, not
+ * broken out as an obstacle-outcome row here.
  */
 function obstacleRows (player) {
   const penguinSuccess = player.pickups - player.coins
   const penguinTotal = penguinSuccess + player.misses
-  const coinTotal = player.coins + player.coin_misses
   const waterTotal = player.breaks + player.water_hits
   const crackTotal = player.jumps + player.crack_hits
 
   return [
     { category: 'Success / Miss', obstacle: 'Penguins', success: penguinSuccess, total: penguinTotal },
-    { category: 'Success / Miss', obstacle: 'Coins', success: player.coins, total: coinTotal },
     { category: 'Success / Fail', obstacle: 'Water (braked)', success: player.breaks, total: waterTotal },
     { category: 'Success / Fail', obstacle: 'Crack (jumped)', success: player.jumps, total: crackTotal },
     { category: 'Fail', obstacle: 'Walls hit', count: player.wall_hits },
@@ -104,16 +108,16 @@ function renderLog (history, running) {
 
 function renderResults (recentResults, totalFinished) {
   const empty = document.getElementById('results-empty')
-  const tables = document.getElementById('results-tables')
+  const content = document.getElementById('results-content')
 
   if (recentResults.length === 0) {
     empty.classList.remove('hidden')
-    tables.classList.add('hidden')
+    content.classList.add('hidden')
     return
   }
 
   empty.classList.add('hidden')
-  tables.classList.remove('hidden')
+  content.classList.remove('hidden')
 
   const firstRoundNumber = totalFinished - recentResults.length + 1
   const newestFirst = recentResults.map((result, i) => ({
@@ -123,6 +127,18 @@ function renderResults (recentResults, totalFinished) {
 
   document.getElementById('results-name-a').textContent = driverNames[0] ?? '—'
   document.getElementById('results-name-b').textContent = driverNames[1] ?? '—'
+  document.getElementById('summary-name-a').textContent = driverNames[0] ? `${driverNames[0]} Coins` : '—'
+  document.getElementById('summary-name-b').textContent = driverNames[1] ? `${driverNames[1]} Coins` : '—'
+
+  document.getElementById('summary-body').innerHTML = newestFirst.map(({ result, round }) => `
+    <tr>
+      <td>${round}</td>
+      <td title="${escapeHtml(result.winner ?? 'Tie')}">${escapeHtml(result.winner ?? 'Tie')}</td>
+      <td>${formatTime(result.duration_seconds)}</td>
+      <td>${result.players?.[driverNames[0]]?.coins ?? '—'}</td>
+      <td>${result.players?.[driverNames[1]]?.coins ?? '—'}</td>
+    </tr>
+  `).join('')
 
   ;['a', 'b'].forEach((slot, i) => {
     const name = driverNames[i]
@@ -130,10 +146,9 @@ function renderResults (recentResults, totalFinished) {
     body.innerHTML = newestFirst.map(({ result, round }) => {
       const player = result.players?.[name]
       if (!player) {
-        return `<tr><td>${round}</td><td colspan="7">—</td></tr>`
+        return `<tr><td>${round}</td><td colspan="6">—</td></tr>`
       }
       const penguinSuccess = player.pickups - player.coins
-      const coinTotal = player.coins + player.coin_misses
       const waterTotal = player.breaks + player.water_hits
       const crackTotal = player.jumps + player.crack_hits
       return `
@@ -141,7 +156,6 @@ function renderResults (recentResults, totalFinished) {
           <td>${round}</td>
           <td>${player.score}</td>
           <td>${formatRatio(penguinSuccess, penguinSuccess + player.misses)}</td>
-          <td>${formatRatio(player.coins, coinTotal)}</td>
           <td>${formatRatio(player.breaks, waterTotal)}</td>
           <td>${formatRatio(player.jumps, crackTotal)}</td>
           <td>${player.wall_hits}</td>
@@ -150,13 +164,6 @@ function renderResults (recentResults, totalFinished) {
       `
     }).join('')
   })
-
-  document.getElementById('winner-body').innerHTML = newestFirst.map(({ result, round }) => `
-    <tr>
-      <td>${round}</td>
-      <td title="${escapeHtml(result.winner ?? 'Tie')}">${escapeHtml(result.winner ?? 'Tie')}</td>
-    </tr>
-  `).join('')
 }
 
 async function poll () {
