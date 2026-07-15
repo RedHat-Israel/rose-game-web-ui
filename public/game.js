@@ -296,7 +296,7 @@ class Obstacles {
     this.track = null
     this.textures = {}
 
-    const obstacleNames = ['barrier', 'bike', 'crack', 'penguin', 'trash', 'water']
+    const obstacleNames = ['barrier', 'bike', 'coin', 'crack', 'penguin', 'trash', 'water']
 
     obstacleNames.forEach(name => {
       loader.load(`assets/obstacles/${name}.png`, (img) => {
@@ -447,6 +447,7 @@ class Information {
 
       infoText += '<br/>'
       infoText += `Pinguins: ${player.pickups}<br/>`
+      infoText += `Coins: ${player.coins}<br/>`
       infoText += `Breaks: ${player.breaks}<br/>`
       infoText += `Jumps: ${player.jumps}<br/>`
       infoText += '<br/>'
