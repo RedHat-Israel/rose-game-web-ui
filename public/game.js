@@ -282,12 +282,12 @@ class Dashboard {
       if (player.lane === 0) {
         document.querySelector('#left.player .name').textContent = player.name
         document.querySelector('#left.player .score').textContent = player.score
-        this.updateCombo('left', player.pinguin_cnt) //הניקוד בלהבה משמאל
+        this.updateCombo('left', player.pinguin_cnt)
       }
       if (player.lane === 1) {
         document.querySelector('#right.player .name').textContent = player.name
         document.querySelector('#right.player .score').textContent = player.score
-          this.updateCombo('right', player.pinguin_cnt)//הניקוד בלהבה מימין
+          this.updateCombo('right', player.pinguin_cnt)
       }
     }
   }
