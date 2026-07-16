@@ -176,6 +176,46 @@ body {
     background-color: #2980b9; /* darker hover effect */
 }
 
+#telemetry-link {
+    display: block;
+    position: absolute;
+    top: 100px;
+    width: 90px;
+    right: 10px;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    border: 1px solid #34495e;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3498db;
+    transition: background-color 0.2s;
+}
+
+#telemetry-link:hover {
+    background-color: #2980b9; /* darker hover effect */
+}
+
+#automation-link {
+    display: block;
+    position: absolute;
+    top: 145px;
+    width: 90px;
+    right: 10px;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    border: 1px solid #34495e;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3498db;
+    transition: background-color 0.2s;
+}
+
+#automation-link:hover {
+    background-color: #2980b9; /* darker hover effect */
+}
+
 #info-panel {
     position: absolute;
     z-index: 1000;

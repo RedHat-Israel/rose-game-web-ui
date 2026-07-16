@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemetry</title>
+    <link rel="stylesheet" href="./telemetry.css">
+</head>
+<body class="dark-theme">
+    <a href="../index.html" id="back-link">&larr; Back to game</a>
+    <h2 class="heading">Telemetry</h2>
+    <button id="clear-button" class="clear-button">Clear history</button>
+
+    <p id="empty-note" class="empty-note">No games played yet.</p>
+
+    <div id="content" class="hidden">
+        <table id="summary-table" class="summary-table">
+            <thead>
+                <tr><th>Round</th><th>Winner</th><th>Time</th></tr>
+            </thead>
+            <tbody id="summary-body"></tbody>
+        </table>
+
+        <div id="player-tables" class="driver-tables">
+            <div class="driver-table">
+                <h4 id="player-name-a" class="driver-name"></h4>
+                <table id="player-table-a">
+                    <thead>
+                        <tr><th>Category</th><th>Obstacle</th><th>Result</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="driver-table">
+                <h4 id="player-name-b" class="driver-name"></h4>
+                <table id="player-table-b">
+                    <thead>
+                        <tr><th>Category</th><th>Obstacle</th><th>Result</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./telemetry.js"></script>
+</body>
+</html>
