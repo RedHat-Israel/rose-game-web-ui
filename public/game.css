@@ -122,6 +122,45 @@ body {
     color: #ecf0f1;     /* text color to match theme */
 }
 
+.combo {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    position: absolute;
+    top: 95px;
+}
+
+.combo.active {
+    display: flex;
+}
+
+.combo-fire {
+    position: relative;
+    font-size: 28px;
+    line-height: 1;
+    filter: drop-shadow(0 0 4px rgba(255, 100, 0, 0.8));
+}
+
+.combo-count {
+    position: absolute;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 2px #000, 0 0 2px #000;
+}
+
+.combo-x {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff7b00;
+    text-shadow: 0 0 4px rgba(255, 100, 0, 0.6);
+}
+
 #time_left {
     width: 105px;
     font-size: 50px;
