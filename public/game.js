@@ -296,7 +296,7 @@ class Obstacles {
     this.track = null
     this.textures = {}
 
-    const obstacleNames = ['barrier', 'bike', 'crack', 'penguin', 'trash', 'water']
+    const obstacleNames = ['barrier', 'bike', 'crack', 'penguin', 'trash', 'water', 'fuel']
 
     obstacleNames.forEach(name => {
       loader.load(`assets/obstacles/${name}.png`, (img) => {
@@ -519,3 +519,184 @@ const Config = {
 }
 
 export const ROSE = new App()
+
+;/* === Fuel side gauges v3 (thick, both sides) === */
+(function () {
+  if (typeof Dashboard === 'undefined') return
+  const MAX = 60
+
+  function gauge (side) {
+    let el = document.getElementById('fuel-' + side)
+    if (!el) {
+      el = document.createElement('div')
+      el.id = 'fuel-' + side
+      el.className = 'fuel-side ' + side
+      el.innerHTML = '<div>⛽</div><div class="track"><div class="fill"></div></div><div class="num">–</div>'
+      document.body.appendChild(el)
+    }
+    return el
+  }
+  function setGauge (side, fuel) {
+    const el = gauge(side)
+    const has = (fuel !== null && fuel !== undefined)
+    const pct = has ? Math.max(0, Math.min(100, fuel / MAX * 100)) : 0
+    const fill = el.querySelector('.fill')
+    fill.style.height = pct + '%'
+    fill.className = 'fill ' + (pct > 50 ? 'ok' : (pct > 20 ? 'warn' : 'low'))
+    el.querySelector('.num').textContent = has ? String(fuel) : '–'
+  }
+
+  const orig = Dashboard.prototype.draw
+  Dashboard.prototype.draw = function () {
+    orig.call(this)
+    let left = null; let right = null
+    if (this.players) {
+      for (let i = 0; i < this.players.length; i++) {
+        const p = this.players[i]
+        if (p.lane === 0) left = p.fuel
+        if (p.lane === 1) right = p.fuel
+      }
+    }
+    setGauge('left', left)
+    setGauge('right', right)
+  }
+})()
+;/* === Fuel-out OUT overlay + Game Over score countup === */
+(function () {
+  if (typeof App === 'undefined') return
+  if (App.prototype.__gameoverPatched) return
+  App.prototype.__gameoverPatched = true
+
+  const COUNTUP_MS = 3500
+  const HOLD_MS = 1500
+
+  let go = null
+  let wasGameover = false
+
+  function carRect (app, player) {
+    const img = app.cars && app.cars.textures ? app.cars.textures[player.car] : null
+    const w = (img && img.width) ? img.width : 90
+    const h = (img && img.height) ? img.height : 130
+    const x = Config.left_margin + player.x * Config.cell_width
+    const y = player.y * Config.row_height
+    return { x, y, w, h: h + 24 }
+  }
+
+  function drawOutOverlay (ctx, app, players) {
+    if (!ctx) return
+    players.forEach(function (p) {
+      if (p.fuel === null || p.fuel === undefined || p.fuel > 0) return
+      const r = carRect(app, p)
+      ctx.save()
+      ctx.fillStyle = 'rgba(10,10,10,0.88)'
+      ctx.fillRect(r.x, r.y, r.w, r.h)
+      ctx.strokeStyle = '#ff3b30'
+      ctx.lineWidth = 3
+      ctx.strokeRect(r.x + 2, r.y + 2, r.w - 4, r.h - 4)
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = '#ff3b30'
+      ctx.font = 'bold ' + Math.max(16, Math.round(r.w * 0.28)) + 'px sans-serif'
+      ctx.fillText('OUT', r.x + r.w / 2, r.y + r.h / 2)
+      ctx.restore()
+    })
+  }
+
+  function drawGameOverAnim (ctx, elapsed) {
+    if (!ctx || !go) return
+    const w = ctx.canvas.width
+    const h = ctx.canvas.height
+    const t = Math.min(1, elapsed / COUNTUP_MS)
+    const eased = 1 - Math.pow(1 - t, 3)
+
+    ctx.save()
+    ctx.fillStyle = 'rgba(0,0,0,0.80)'
+    ctx.fillRect(0, 0, w, h)
+
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = '#ffffff'
+    ctx.font = 'bold ' + Math.round(h * 0.09) + 'px sans-serif'
+    ctx.fillText('GAME OVER', w / 2, h * 0.2)
+
+    const players = go.players
+    const maxScore = Math.max.apply(null, players.map(function (p) { return p.score })) || 1
+    const cols = players.length
+
+    players.forEach(function (p, i) {
+      const cx = w * (i + 1) / (cols + 1)
+      const barW = Math.min(90, w * 0.12)
+      const barH = h * 0.32
+      const bx = cx - barW / 2
+      const by = h * 0.42
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)'
+      ctx.lineWidth = 2
+      ctx.strokeRect(bx, by, barW, barH)
+
+      const fillH = barH * Math.max(0, Math.min(1, (p.score * eased) / maxScore))
+      ctx.fillStyle = '#3ac06a'
+      ctx.fillRect(bx, by + (barH - fillH), barW, fillH)
+
+      ctx.fillStyle = '#9fd3ff'
+      ctx.font = 'bold ' + Math.round(h * 0.04) + 'px sans-serif'
+      ctx.fillText(p.name || ('Player ' + (i + 1)), cx, by - h * 0.05)
+
+      ctx.fillStyle = '#ffcc33'
+      ctx.font = 'bold ' + Math.round(h * 0.055) + 'px sans-serif'
+      ctx.fillText(String(Math.round(p.score * eased)), cx, by + barH + h * 0.06)
+    })
+
+    if (elapsed >= COUNTUP_MS) {
+      const winner = players.slice().sort(function (a, b) { return b.score - a.score })[0]
+      ctx.fillStyle = '#ffffff'
+      ctx.font = 'bold ' + Math.round(h * 0.06) + 'px sans-serif'
+      ctx.fillText((winner ? winner.name : '') + ' won', w / 2, h * 0.88)
+    }
+
+    ctx.restore()
+  }
+
+  function rafStep (ts) {
+    if (!go) return
+    if (go.startTs === null) go.startTs = ts
+    if (go.app && go.app.context) {
+      drawGameOverAnim(go.app.context, ts - go.startTs)
+    }
+    if (ts - go.startTs < COUNTUP_MS + HOLD_MS) {
+      requestAnimationFrame(rafStep)
+    }
+  }
+
+  const orig = App.prototype.onmessage
+  App.prototype.onmessage = function (m) {
+    orig.call(this, m)
+
+    let msg
+    try { msg = JSON.parse(m.data) } catch (e) { return }
+    if (msg.action !== 'update') return
+    const state = msg.payload
+    if (!state) return
+
+    if (state.gameover) {
+      if (!wasGameover) {
+        go = {
+          startTs: null,
+          app: this,
+          players: (state.players || []).map(function (p) {
+            return { name: p.name, lane: p.lane, score: p.score }
+          })
+        }
+        requestAnimationFrame(rafStep)
+      }
+      wasGameover = true
+      if (go && go.startTs !== null) {
+        drawGameOverAnim(this.context, performance.now() - go.startTs)
+      }
+    } else {
+      wasGameover = false
+      go = null
+      drawOutOverlay(this.context, this, state.players || [])
+    }
+  }
+})()
