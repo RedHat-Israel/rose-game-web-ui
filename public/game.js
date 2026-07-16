@@ -1,3 +1,5 @@
+import { Tournament } from './tournament.js'
+
 class App {
   client = null
   controller = null
@@ -31,6 +33,7 @@ class App {
     this.finish_line = new FinishLine(imageLoader)
     this.infoUpdater = new Information()
     this.sound = new Sound('assets/soundtrack/Nyan_Cat.ogg')
+    this.tournament = new Tournament()
   }
 
   onmessage (m) {
@@ -51,6 +54,7 @@ class App {
     this.cars.update(state)
     this.finish_line.update(state)
     this.infoUpdater.update(state)
+    this.tournament.update(state)
 
     // Draw
     this.dashboard.draw(this.context)

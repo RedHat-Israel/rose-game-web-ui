@@ -156,6 +156,25 @@ body {
     background-color: #2980b9; /* darker hover effect */
 }
 
+#tournament-link {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 122px;
+    font-weight: bold;
+    color: #ecf0f1;
+    text-decoration: none;
+    border: 1px solid #34495e;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: #3498db;
+    transition: background-color 0.2s;
+}
+
+#tournament-link:hover {
+    background-color: #2980b9; /* darker hover effect */
+}
+
 #info-btn {
     display: block;
     position: absolute;
@@ -187,6 +206,38 @@ body {
     color: white;
     padding: 20px;
     overflow-y: auto; /* For potential scrolling */
+}
+
+#t-result {
+    position: absolute;
+    z-index: 1000;
+    top: 250px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 25px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    border: 1px solid #34495e; /* border color to match theme */
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+#t-result button {
+    margin-top: 15px;
+    padding: 10px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    border: 1px solid #34495e;
+    color: #ecf0f1;
+    background-color: #3498db;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+#t-result button:hover {
+    background-color: #2980b9; /* darker hover effect */
 }
 
 .hidden {
