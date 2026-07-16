@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body class="dark-theme">
+    <h1 id="t-status" class="heading"></h1>
+
+    <div id="t-setup">
+        <input id="t-url" class="input-field" type="text" placeholder="Driver URL">
+        <button id="t-add" class="submit-button">Add</button>
+    </div>
+
+    <div id="t-bracket"></div>
+
+    <div>
+        <button id="t-next" class="submit-button">Next</button>
+        <button id="t-new" class="cancel-button">New Tournament</button>
+    </div>
+
+    <a href="/index.html" class="back-link">Back to game</a>
+
+    <script type="module">
+      import { Tournament } from '../tournament.js'
+      new Tournament().bind()
+    </script>
+</body>
+
+</html>
