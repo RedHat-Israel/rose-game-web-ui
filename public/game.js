@@ -282,11 +282,25 @@ class Dashboard {
       if (player.lane === 0) {
         document.querySelector('#left.player .name').textContent = player.name
         document.querySelector('#left.player .score').textContent = player.score
+        this.updateCombo('left', player.pinguin_cnt)
       }
       if (player.lane === 1) {
         document.querySelector('#right.player .name').textContent = player.name
         document.querySelector('#right.player .score').textContent = player.score
+          this.updateCombo('right', player.pinguin_cnt)
       }
+    }
+  }
+
+  updateCombo (side, pinguinCnt) {
+    const comboEl = document.querySelector(`#${side}.player .combo`)
+    const countEl = document.querySelector(`#${side}.player .combo-count`)
+
+    if (pinguinCnt > 1) {
+      countEl.textContent = pinguinCnt
+      comboEl.classList.add('active')
+    } else {
+      comboEl.classList.remove('active')
     }
   }
 }
