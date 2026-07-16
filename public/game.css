@@ -196,3 +196,57 @@ body {
 .error-text {
     color: red;
 }
+
+/* === Fuel side gauges === */
+.fuel-side {
+    position: fixed;
+    top: 110px;
+    bottom: 36px;
+    width: 60px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font: bold 16px sans-serif;
+    color: #fff;
+    text-shadow: 0 1px 2px #000;
+    pointer-events: none;
+}
+
+.fuel-side.left {
+    left: 8px;
+}
+
+.fuel-side.right {
+    right: 8px;
+}
+
+.fuel-side .track {
+    flex: 1;
+    width: 44px;
+    margin: 6px 0;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, .42);
+    border: 3px solid rgba(255, 255, 255, .65);
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+}
+
+.fuel-side .fill {
+    width: 100%;
+    height: 0;
+    transition: height .8s ease, background .8s ease;
+}
+
+.fuel-side .fill.ok {
+    background: #3ac06a;
+}
+
+.fuel-side .fill.warn {
+    background: #e7a83a;
+}
+
+.fuel-side .fill.low {
+    background: #e5544e;
+}

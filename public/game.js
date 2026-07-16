@@ -518,24 +518,15 @@ const Config = {
   finish_line_duration: 5
 }
 
-export const ROSE = new App();
-
-
+export const ROSE = new App()
 
 ;/* === Fuel side gauges v3 (thick, both sides) === */
 (function () {
   if (typeof Dashboard === 'undefined') return
-  var MAX = 60
-  var style = document.createElement('style')
-  style.textContent =
-    '.fuel-side{position:fixed;top:110px;bottom:36px;width:60px;z-index:99999;display:flex;flex-direction:column;align-items:center;font:bold 16px sans-serif;color:#fff;text-shadow:0 1px 2px #000;pointer-events:none}' +
-    '.fuel-side.left{left:8px}.fuel-side.right{right:8px}' +
-    '.fuel-side .track{flex:1;width:44px;margin:6px 0;border-radius:16px;background:rgba(0,0,0,.42);border:3px solid rgba(255,255,255,.65);overflow:hidden;display:flex;align-items:flex-end}' +
-    '.fuel-side .fill{width:100%;height:0;transition:height .8s ease, background .8s ease}'
-  document.head.appendChild(style)
+  const MAX = 60
 
   function gauge (side) {
-    var el = document.getElementById('fuel-' + side)
+    let el = document.getElementById('fuel-' + side)
     if (!el) {
       el = document.createElement('div')
       el.id = 'fuel-' + side
@@ -546,22 +537,22 @@ export const ROSE = new App();
     return el
   }
   function setGauge (side, fuel) {
-    var el = gauge(side)
-    var has = (fuel !== null && fuel !== undefined)
-    var pct = has ? Math.max(0, Math.min(100, fuel / MAX * 100)) : 0
-    var fill = el.querySelector('.fill')
+    const el = gauge(side)
+    const has = (fuel !== null && fuel !== undefined)
+    const pct = has ? Math.max(0, Math.min(100, fuel / MAX * 100)) : 0
+    const fill = el.querySelector('.fill')
     fill.style.height = pct + '%'
-    fill.style.background = pct > 50 ? '#3ac06a' : (pct > 20 ? '#e7a83a' : '#e5544e')
+    fill.className = 'fill ' + (pct > 50 ? 'ok' : (pct > 20 ? 'warn' : 'low'))
     el.querySelector('.num').textContent = has ? String(fuel) : '–'
   }
 
-  var orig = Dashboard.prototype.draw
+  const orig = Dashboard.prototype.draw
   Dashboard.prototype.draw = function () {
     orig.call(this)
-    var left = null, right = null
+    let left = null; let right = null
     if (this.players) {
-      for (var i = 0; i < this.players.length; i++) {
-        var p = this.players[i]
+      for (let i = 0; i < this.players.length; i++) {
+        const p = this.players[i]
         if (p.lane === 0) left = p.fuel
         if (p.lane === 1) right = p.fuel
       }
@@ -576,26 +567,26 @@ export const ROSE = new App();
   if (App.prototype.__gameoverPatched) return
   App.prototype.__gameoverPatched = true
 
-  var COUNTUP_MS = 3500
-  var HOLD_MS = 1500
+  const COUNTUP_MS = 3500
+  const HOLD_MS = 1500
 
-  var go = null
-  var wasGameover = false
+  let go = null
+  let wasGameover = false
 
   function carRect (app, player) {
-    var img = app.cars && app.cars.textures ? app.cars.textures[player.car] : null
-    var w = (img && img.width) ? img.width : 90
-    var h = (img && img.height) ? img.height : 130
-    var x = Config.left_margin + player.x * Config.cell_width
-    var y = player.y * Config.row_height
-    return { x: x, y: y, w: w, h: h + 24 }
+    const img = app.cars && app.cars.textures ? app.cars.textures[player.car] : null
+    const w = (img && img.width) ? img.width : 90
+    const h = (img && img.height) ? img.height : 130
+    const x = Config.left_margin + player.x * Config.cell_width
+    const y = player.y * Config.row_height
+    return { x, y, w, h: h + 24 }
   }
 
   function drawOutOverlay (ctx, app, players) {
     if (!ctx) return
     players.forEach(function (p) {
       if (p.fuel === null || p.fuel === undefined || p.fuel > 0) return
-      var r = carRect(app, p)
+      const r = carRect(app, p)
       ctx.save()
       ctx.fillStyle = 'rgba(10,10,10,0.88)'
       ctx.fillRect(r.x, r.y, r.w, r.h)
@@ -613,10 +604,10 @@ export const ROSE = new App();
 
   function drawGameOverAnim (ctx, elapsed) {
     if (!ctx || !go) return
-    var w = ctx.canvas.width
-    var h = ctx.canvas.height
-    var t = Math.min(1, elapsed / COUNTUP_MS)
-    var eased = 1 - Math.pow(1 - t, 3)
+    const w = ctx.canvas.width
+    const h = ctx.canvas.height
+    const t = Math.min(1, elapsed / COUNTUP_MS)
+    const eased = 1 - Math.pow(1 - t, 3)
 
     ctx.save()
     ctx.fillStyle = 'rgba(0,0,0,0.80)'
@@ -628,22 +619,22 @@ export const ROSE = new App();
     ctx.font = 'bold ' + Math.round(h * 0.09) + 'px sans-serif'
     ctx.fillText('GAME OVER', w / 2, h * 0.2)
 
-    var players = go.players
-    var maxScore = Math.max.apply(null, players.map(function (p) { return p.score })) || 1
-    var cols = players.length
+    const players = go.players
+    const maxScore = Math.max.apply(null, players.map(function (p) { return p.score })) || 1
+    const cols = players.length
 
     players.forEach(function (p, i) {
-      var cx = w * (i + 1) / (cols + 1)
-      var barW = Math.min(90, w * 0.12)
-      var barH = h * 0.32
-      var bx = cx - barW / 2
-      var by = h * 0.42
+      const cx = w * (i + 1) / (cols + 1)
+      const barW = Math.min(90, w * 0.12)
+      const barH = h * 0.32
+      const bx = cx - barW / 2
+      const by = h * 0.42
 
       ctx.strokeStyle = 'rgba(255,255,255,0.55)'
       ctx.lineWidth = 2
       ctx.strokeRect(bx, by, barW, barH)
 
-      var fillH = barH * Math.max(0, Math.min(1, (p.score * eased) / maxScore))
+      const fillH = barH * Math.max(0, Math.min(1, (p.score * eased) / maxScore))
       ctx.fillStyle = '#3ac06a'
       ctx.fillRect(bx, by + (barH - fillH), barW, fillH)
 
@@ -657,7 +648,7 @@ export const ROSE = new App();
     })
 
     if (elapsed >= COUNTUP_MS) {
-      var winner = players.slice().sort(function (a, b) { return b.score - a.score })[0]
+      const winner = players.slice().sort(function (a, b) { return b.score - a.score })[0]
       ctx.fillStyle = '#ffffff'
       ctx.font = 'bold ' + Math.round(h * 0.06) + 'px sans-serif'
       ctx.fillText((winner ? winner.name : '') + ' won', w / 2, h * 0.88)
@@ -677,14 +668,14 @@ export const ROSE = new App();
     }
   }
 
-  var orig = App.prototype.onmessage
+  const orig = App.prototype.onmessage
   App.prototype.onmessage = function (m) {
     orig.call(this, m)
 
-    var msg
+    let msg
     try { msg = JSON.parse(m.data) } catch (e) { return }
     if (msg.action !== 'update') return
-    var state = msg.payload
+    const state = msg.payload
     if (!state) return
 
     if (state.gameover) {
